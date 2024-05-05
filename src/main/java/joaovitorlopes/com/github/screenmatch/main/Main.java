@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
+import joaovitorlopes.com.github.screenmatch.model.EpisodeData;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
@@ -33,5 +34,8 @@ public class Main {
 			seasons.add(seasonData);
 		}
 		seasons.forEach(System.out::println);
+        System.out.println("----EPISODES NAME----");
+        seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
+        System.out.println("----EPISODES NAME----");
     }
 }
