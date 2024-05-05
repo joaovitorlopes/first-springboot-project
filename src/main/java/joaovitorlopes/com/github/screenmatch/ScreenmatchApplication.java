@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch;
 
+import joaovitorlopes.com.github.screenmatch.model.EpisodeData;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
@@ -23,7 +24,11 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		System.out.println(json);
 		System.out.println("-------\n");
 		DataConversion conversion = new DataConversion();
-		SeriesData data = conversion.getData(json, SeriesData.class);
-		System.out.println(data);
+		SeriesData seriesData = conversion.getData(json, SeriesData.class);
+		System.out.println(seriesData);
+		System.out.println("-------\n");
+		json = consumeAPI.getData("https://www.omdbapi.com/?t=fallout&Season=1&Episode=1&apikey=5c08242");
+		EpisodeData episodeData = conversion.getData(json, EpisodeData.class);
+		System.out.println(episodeData);
 	}
 }
