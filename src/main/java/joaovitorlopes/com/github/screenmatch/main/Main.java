@@ -7,6 +7,8 @@ import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
 import joaovitorlopes.com.github.screenmatch.model.SeasonData;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,5 +59,21 @@ public class Main {
                 ).collect(Collectors.toList());
 
         episodes.forEach(System.out::println);
+
+        System.out.println("Enter a year would you like to view the episodes:");
+        var year = reading.nextInt();
+        reading.nextLine();
+
+        LocalDate searchDate = LocalDate.of(year, 1, 1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        episodes.stream()
+                .filter(e -> e.getReleasedData() != null && e.getReleasedData().isAfter(searchDate))
+                .forEach(e -> System.out.println(
+                        "Season: " + e.getSeason() +
+                                " Episode: " + e.getTitle() +
+                                " ReleasedData: " + e.getReleasedData().format(formatter)
+                ));
     }
 }
