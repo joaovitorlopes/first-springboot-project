@@ -6,9 +6,8 @@ import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
 import joaovitorlopes.com.github.screenmatch.model.SeasonData;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -33,9 +32,22 @@ public class Main {
 			SeasonData seasonData = conversion.getData(json, SeasonData.class);
 			seasons.add(seasonData);
 		}
+
 		seasons.forEach(System.out::println);
         System.out.println("----EPISODES NAME----");
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         System.out.println("----EPISODES NAME----");
+
+        List<EpisodeData> episodeData = seasons.stream()
+                .flatMap(s -> s.episodes().stream())
+                .collect(Collectors.toList());
+
+        System.out.println("----TOP 5 EPISODES----");
+        episodeData.stream()
+                .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+        System.out.println("----TOP 5 EPISODES----");
     }
 }
