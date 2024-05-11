@@ -1,6 +1,7 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
 import joaovitorlopes.com.github.screenmatch.model.EpisodeData;
+import joaovitorlopes.com.github.screenmatch.model.Episode;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
@@ -49,5 +50,12 @@ public class Main {
                 .limit(5)
                 .forEach(System.out::println);
         System.out.println("----TOP 5 EPISODES----");
+
+        List<Episode> episodes = seasons.stream()
+                .flatMap(s -> s.episodes().stream()
+                        .map(d -> new Episode(s.season(), d))
+                ).collect(Collectors.toList());
+
+        episodes.forEach(System.out::println);
     }
 }
