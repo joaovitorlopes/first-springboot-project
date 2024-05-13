@@ -37,9 +37,9 @@ public class Main {
 		}
 
 		seasons.forEach(System.out::println);
-        System.out.println("----EPISODES NAME----");
+        System.out.println("\n----EPISODES NAME----");
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
-        System.out.println("----EPISODES NAME----");
+        System.out.println("----EPISODES NAME----\n");
 
         List<EpisodeData> episodeData = seasons.stream()
                 .flatMap(s -> s.episodes().stream())
@@ -54,7 +54,7 @@ public class Main {
                 .limit(5)
                 .map(e -> e.title().toUpperCase())
                 .forEach(System.out::println);
-        System.out.println("----TOP 5 EPISODES----");
+        System.out.println("----TOP 5 EPISODES----\n");
 
         List<Episode> episodes = seasons.stream()
                 .flatMap(s -> s.episodes().stream()
@@ -63,35 +63,41 @@ public class Main {
 
         episodes.forEach(System.out::println);
 
-        System.out.println("Enter a part of the title to search for an episode:");
-        var titleExcerpt = reading.nextLine();
+//        System.out.println("Enter a part of the title to search for an episode:");
+//        var titleExcerpt = reading.nextLine();
+//
+//        // Optional is a container
+//        Optional<Episode> searchedEpisode = episodes.stream()
+//                .filter(e -> e.getTitle().toUpperCase().contains(titleExcerpt.toUpperCase()))
+//                .findFirst(); //Final operation (requires return)
+//        if (searchedEpisode.isPresent()) {
+//            System.out.println("Episode found!");
+//            System.out.println("Title: " + searchedEpisode.get().getTitle());
+//            System.out.println("Season: " + searchedEpisode.get().getSeason());
+//        } else {
+//            System.out.println("Episode not found!");
+//        }
 
-        // Optional is a container
-        Optional<Episode> searchedEpisode = episodes.stream()
-                .filter(e -> e.getTitle().toUpperCase().contains(titleExcerpt.toUpperCase()))
-                .findFirst(); //Final operation (requires return)
-        if (searchedEpisode.isPresent()) {
-            System.out.println("Episode found!");
-            System.out.println("Title: " + searchedEpisode.get().getTitle());
-            System.out.println("Season: " + searchedEpisode.get().getSeason());
-        } else {
-            System.out.println("Episode not found!");
-        }
+//        System.out.println("Enter a year would you like to view the episodes:");
+//        var year = reading.nextInt();
+//        reading.nextLine();
+//
+//        LocalDate searchDate = LocalDate.of(year, 1, 1);
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//
+//        episodes.stream()
+//                .filter(e -> e.getReleasedData() != null && e.getReleasedData().isAfter(searchDate))
+//                .forEach(e -> System.out.println(
+//                        "Season: " + e.getSeason() +
+//                                " Episode: " + e.getTitle() +
+//                                " ReleasedData: " + e.getReleasedData().format(formatter)
+//                ));
 
-        System.out.println("Enter a year would you like to view the episodes:");
-        var year = reading.nextInt();
-        reading.nextLine();
-
-        LocalDate searchDate = LocalDate.of(year, 1, 1);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        episodes.stream()
-                .filter(e -> e.getReleasedData() != null && e.getReleasedData().isAfter(searchDate))
-                .forEach(e -> System.out.println(
-                        "Season: " + e.getSeason() +
-                                " Episode: " + e.getTitle() +
-                                " ReleasedData: " + e.getReleasedData().format(formatter)
-                ));
+        Map<Integer, Double> ratingBySeason = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.groupingBy(Episode::getSeason,
+                        Collectors.averagingDouble(Episode::getRating)));
+        System.out.println("\nRating by Seasons: "+ ratingBySeason);
     }
 }
