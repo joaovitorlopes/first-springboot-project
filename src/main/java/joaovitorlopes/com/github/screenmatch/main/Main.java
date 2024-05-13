@@ -46,10 +46,13 @@ public class Main {
                 .collect(Collectors.toList());
 
         System.out.println("----TOP 5 EPISODES----");
+        // use peek to debug streams
+        // .peek(e -> System.out.println("First filter(N/A) " + e))
         episodeData.stream()
                 .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
                 .sorted(Comparator.comparing(EpisodeData::rating).reversed())
                 .limit(5)
+                .map(e -> e.title().toUpperCase())
                 .forEach(System.out::println);
         System.out.println("----TOP 5 EPISODES----");
 
@@ -59,6 +62,21 @@ public class Main {
                 ).collect(Collectors.toList());
 
         episodes.forEach(System.out::println);
+
+        System.out.println("Enter a part of the title to search for an episode:");
+        var titleExcerpt = reading.nextLine();
+
+        // Optional is a container
+        Optional<Episode> searchedEpisode = episodes.stream()
+                .filter(e -> e.getTitle().toUpperCase().contains(titleExcerpt.toUpperCase()))
+                .findFirst(); //Final operation (requires return)
+        if (searchedEpisode.isPresent()) {
+            System.out.println("Episode found!");
+            System.out.println("Title: " + searchedEpisode.get().getTitle());
+            System.out.println("Season: " + searchedEpisode.get().getSeason());
+        } else {
+            System.out.println("Episode not found!");
+        }
 
         System.out.println("Enter a year would you like to view the episodes:");
         var year = reading.nextInt();
