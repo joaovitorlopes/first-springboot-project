@@ -94,10 +94,23 @@ public class Main {
 //                                " ReleasedData: " + e.getReleasedData().format(formatter)
 //                ));
 
+        System.out.println("\n-----Rating by Seasons-----");
         Map<Integer, Double> ratingBySeason = episodes.stream()
                 .filter(e -> e.getRating() > 0.0)
                 .collect(Collectors.groupingBy(Episode::getSeason,
                         Collectors.averagingDouble(Episode::getRating)));
-        System.out.println("\nRating by Seasons: "+ ratingBySeason);
+        System.out.println(ratingBySeason);
+        System.out.println("-----Rating by Seasons-----\n");
+
+        // Creating statistics
+        System.out.println("\n-----Summary Statistics-----");
+        DoubleSummaryStatistics est = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.summarizingDouble(Episode::getRating));
+        System.out.println("Average Rating: " + est.getAverage());
+        System.out.println("Best Rating: " + est.getMax());
+        System.out.println("Worst Rating: " + est.getMin());
+        System.out.println("Total Episodes: " + est.getCount());
+        System.out.println("-----Summary Statistics-----\n");
     }
 }
