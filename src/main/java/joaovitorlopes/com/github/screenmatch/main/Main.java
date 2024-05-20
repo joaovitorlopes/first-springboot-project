@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
@@ -15,8 +16,11 @@ public class Main {
     private ConsumeAPI consumeAPI = new ConsumeAPI();
     private DataConversion conversion = new DataConversion();
 
+    Dotenv dotenv = Dotenv.load();
+    String omdbApiKey = dotenv.get("OMDB_API_KEY");
+
     private final String ADDRESS = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey=5c08242";
+    private final String API_KEY = "&apikey="+omdbApiKey;
 
     private List<SeriesData> seriesData = new ArrayList<>();
 
