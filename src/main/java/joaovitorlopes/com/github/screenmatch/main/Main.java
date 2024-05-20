@@ -1,11 +1,13 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
+import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
 import joaovitorlopes.com.github.screenmatch.model.SeasonData;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -79,6 +81,13 @@ public class Main {
     }
 
     private void listSearchedSeries() {
-        seriesData.forEach(System.out::println);
+
+        List<Series> seriesList = new ArrayList<>();
+        seriesList = seriesData.stream()
+                        .map(s -> new Series(s))
+                                .collect(Collectors.toList());
+        seriesList.stream()
+                .sorted(Comparator.comparing(Series::getGenre))
+                .forEach(System.out::println);
     }
 }
