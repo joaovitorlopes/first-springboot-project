@@ -1,17 +1,37 @@
 package joaovitorlopes.com.github.screenmatch.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
+import joaovitorlopes.com.github.screenmatch.service.SearchChatGPT;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
+@Entity
+@Table(name = "series")
 public class Series {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String title;
+
     private Integer totalSeasons;
     private Double rating;
+
+    @Enumerated(EnumType.STRING)
     private Category genre;
+
     private String actors;
     private String plot;
     private String poster;
+
+    @Transient
+    private List<Episode> episodes = new ArrayList<>();
+
+    public Series() {}
 
     public Series(SeriesData seriesData) {
         this.title = seriesData.title();
@@ -21,6 +41,22 @@ public class Series {
         this.actors = seriesData.actors();
         this.plot = seriesData.plot();
         this.poster = seriesData.poster();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
     }
 
     public String getTitle() {
@@ -83,11 +119,11 @@ public class Series {
     public String toString() {
         return
                 "genre=" + genre +
-                ", title='" + title + '\'' +
-                ", totalSeasons=" + totalSeasons +
-                ", rating=" + rating +
-                ", actors='" + actors + '\'' +
-                ", plot='" + plot + '\'' +
-                ", poster='" + poster + '\'';
+                        ", title='" + title + '\'' +
+                        ", totalSeasons=" + totalSeasons +
+                        ", rating=" + rating +
+                        ", actors='" + actors + '\'' +
+                        ", plot='" + plot + '\'' +
+                        ", poster='" + poster + '\'';
     }
 }
