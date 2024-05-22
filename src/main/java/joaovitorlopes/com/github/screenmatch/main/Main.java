@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
+import joaovitorlopes.com.github.screenmatch.model.Episode;
 import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.model.SeriesData;
 import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
@@ -18,11 +19,13 @@ public class Main {
     private DataConversion conversion = new DataConversion();
 
     private final String ADDRESS = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey="+System.getenv("OMDB_APIKEY");
+    private final String API_KEY = "&apikey=" + System.getenv("OMDB_APIKEY");
 
     private List<SeriesData> seriesData = new ArrayList<>();
 
     private SeriesRepository repository;
+
+    private List<Series> series = new ArrayList<>();
 
     public Main(SeriesRepository repository) {
         this.repository = repository;
@@ -35,7 +38,7 @@ public class Main {
                     1 - Search Series
                     2 - Search Episodes
                     3 - List Searched Series
-            
+                                
                     0 - Exit
                     """;
 
@@ -79,19 +82,40 @@ public class Main {
     }
 
     private void searchEpisodeBySeries() {
-        SeriesData seriesData = getSeriesData();
-        List<SeasonData> seasons = new ArrayList<>();
+        listSearchedSeries();
+        System.out.println("Choice a series by name: ");
+        var seriesName = reading.nextLine();
 
-        for (int i = 1; i <= seriesData.totalSeasons(); i++) {
-            var json = consumeAPI.getData(ADDRESS + seriesData.title().replace(" ", "+") + "&season=" + i + API_KEY);
-            SeasonData seasonData = conversion.getData(json, SeasonData.class);
-            seasons.add(seasonData);
+        Optional<Series> serie = series.stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(seriesName.toLowerCase()))
+                .findFirst();
+
+        if (serie.isPresent()) {
+
+            var foundSeries = serie.get();
+            List<SeasonData> seasons = new ArrayList<>();
+
+            for (int i = 1; i <= foundSeries.getTotalSeasons(); i++) {
+                var json = consumeAPI.getData(ADDRESS + foundSeries.getTitle().replace(" ", "+") + "&season=" + i + API_KEY);
+                SeasonData seasonData = conversion.getData(json, SeasonData.class);
+                seasons.add(seasonData);
+            }
+            seasons.forEach(System.out::println);
+
+            List<Episode> episodes = seasons.stream()
+                    .flatMap(s -> s.episodes().stream()
+                            .map(e -> new Episode(s.season(), e)))
+                    .collect(Collectors.toList());
+
+            foundSeries.setEpisodes(episodes);
+            repository.save(foundSeries);
+        } else {
+            System.out.println("Series not found!");
         }
-        seasons.forEach(System.out::println);
     }
 
     private void listSearchedSeries() {
-        List<Series> series = repository.findAll();
+        series = repository.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Series::getGenre))
                 .forEach(System.out::println);
