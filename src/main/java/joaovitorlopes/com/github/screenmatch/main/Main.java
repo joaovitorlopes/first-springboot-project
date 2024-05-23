@@ -38,6 +38,7 @@ public class Main {
                     1 - Search Series
                     2 - Search Episodes
                     3 - List Searched Series
+                    4 - Search Series by Title
                                 
                     0 - Exit
                     """;
@@ -56,6 +57,9 @@ public class Main {
                 case 3:
                     listSearchedSeries();
                     break;
+                case 4:
+                    searchSeriesByTitle();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -68,7 +72,6 @@ public class Main {
     private void searchSeriesWeb() {
         SeriesData data = getSeriesData();
         Series series = new Series(data);
-//        seriesData.add(data);
         repository.save(series);
         System.out.println(data);
     }
@@ -86,9 +89,7 @@ public class Main {
         System.out.println("Choice a series by name: ");
         var seriesName = reading.nextLine();
 
-        Optional<Series> serie = series.stream()
-                .filter(s -> s.getTitle().toLowerCase().contains(seriesName.toLowerCase()))
-                .findFirst();
+        Optional<Series> serie = repository.findByTitleContainingIgnoreCase(seriesName);
 
         if (serie.isPresent()) {
 
@@ -119,5 +120,19 @@ public class Main {
         series.stream()
                 .sorted(Comparator.comparing(Series::getGenre))
                 .forEach(System.out::println);
+    }
+
+    private void searchSeriesByTitle() {
+        System.out.println("Choice a series by name: ");
+        var seriesName = reading.nextLine();
+        Optional<Series> searchedSeries = repository.findByTitleContainingIgnoreCase(seriesName);
+
+        if (searchedSeries.isPresent()) {
+            System.out.println("Series Data: " + searchedSeries.get());
+
+        } else {
+            System.out.println("Series not found!");
+        }
+
     }
 }
