@@ -43,6 +43,7 @@ public class Main {
                     8 - Search Series by Total Seasons
                     9 - Search Episode by Name
                     10 - TOP 5 Episodes By Series
+                    11 - Search Episodes By Date
                                 
                     0 - Exit
                     """;
@@ -81,6 +82,9 @@ public class Main {
                     break;
                 case 10:
                     searchTop5EpisodesBySeries();
+                    break;
+                case 11:
+                    searchEpisodesByDate();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -210,6 +214,20 @@ public class Main {
                     System.out.printf("Series: %s, Season: %s, Episode: %s - %s, Rating: %s\n",
                             e.getSeries().getTitle(), e.getSeason(),
                             e.getEpisodeNumber(), e.getTitle(), e.getRating()));
+        }
+    }
+
+    private void searchEpisodesByDate() {
+        searchSeriesByTitle();
+        if (searchSeries.isPresent()) {
+            Series series = searchSeries.get();
+            System.out.println("Enter the year limit of the episode's release date: ");
+            var releasedYear = reading.nextInt();
+            reading.nextLine();
+
+            List<Episode> episodesByYear = repository.findEpisodesBySeriesAndYear(series, releasedYear);
+            episodesByYear.forEach(System.out::println);
+
         }
     }
 }
