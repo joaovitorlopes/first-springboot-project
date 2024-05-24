@@ -23,6 +23,8 @@ public class Main {
 
     private List<Series> series = new ArrayList<>();
 
+    private Optional<Series> searchSeries;
+
     public Main(SeriesRepository repository) {
         this.repository = repository;
     }
@@ -39,6 +41,8 @@ public class Main {
                     6 - TOP 5 Series
                     7 - Search Series by Category
                     8 - Search Series by Total Seasons
+                    9 - Search Episode by Name
+                    10 - TOP 5 Episodes By Series
                                 
                     0 - Exit
                     """;
@@ -71,6 +75,12 @@ public class Main {
                     break;
                 case 8:
                     searchSeriesByTotalSeasons();
+                    break;
+                case 9:
+                    searchEpisodeByName();
+                    break;
+                case 10:
+                    searchTop5EpisodesBySeries();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -137,10 +147,10 @@ public class Main {
     private void searchSeriesByTitle() {
         System.out.println("Choice a series by name: ");
         var seriesName = reading.nextLine();
-        Optional<Series> searchedSeries = repository.findByTitleContainingIgnoreCase(seriesName);
+        searchSeries = repository.findByTitleContainingIgnoreCase(seriesName);
 
-        if (searchedSeries.isPresent()) {
-            System.out.println("Series Data: " + searchedSeries.get());
+        if (searchSeries.isPresent()) {
+            System.out.println("Series Data: " + searchSeries.get());
 
         } else {
             System.out.println("Series not found!");
@@ -176,8 +186,30 @@ public class Main {
         var seasons = reading.nextInt();
         System.out.println("Enter a minimum rating to search series: ");
         var rating = reading.nextDouble();
-        List<Series> seriesFound = repository.findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(seasons, rating);
+        List<Series> seriesFound = repository.seriesByTotalSeasonsAndRating(seasons, rating);
         System.out.println("Series with " + seasons + " seasons and " + rating + " rating: ");
         seriesFound.forEach(s -> System.out.println(s.getTitle() + ", Total seasons: " + s.getTotalSeasons() + ", Rating: " + s.getRating()));
+    }
+
+    private void searchEpisodeByName() {
+        System.out.println("Enter a name or fragment of the episode name: ");
+        var episodeName = reading.nextLine();
+        List<Episode> episodesFound = repository.episodesByName(episodeName);
+        episodesFound.forEach(e ->
+                System.out.printf("Series: %s, Season: %s, Episode: %s - %s\n",
+                        e.getSeries().getTitle(), e.getSeason(),
+                        e.getEpisodeNumber(), e.getTitle()));
+    }
+
+    private void searchTop5EpisodesBySeries() {
+        searchSeriesByTitle();
+        if (searchSeries.isPresent()) {
+            Series series = searchSeries.get();
+            List<Episode> topEpisodes = repository.top5EpisodesBySeries(series);
+            topEpisodes.forEach(e ->
+                    System.out.printf("Series: %s, Season: %s, Episode: %s - %s, Rating: %s\n",
+                            e.getSeries().getTitle(), e.getSeason(),
+                            e.getEpisodeNumber(), e.getTitle(), e.getRating()));
+        }
     }
 }
