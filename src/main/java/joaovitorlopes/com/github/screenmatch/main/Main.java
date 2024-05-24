@@ -39,6 +39,7 @@ public class Main {
                     2 - Search Episodes
                     3 - List Searched Series
                     4 - Search Series by Title
+                    5 - Search Series by Actors
                                 
                     0 - Exit
                     """;
@@ -59,6 +60,9 @@ public class Main {
                     break;
                 case 4:
                     searchSeriesByTitle();
+                    break;
+                case 5:
+                    searchSeriesByActor();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -133,6 +137,15 @@ public class Main {
         } else {
             System.out.println("Series not found!");
         }
+    }
 
+    private void searchSeriesByActor() {
+        System.out.println("Enter the actor's name:");
+        var actorName = reading.nextLine();
+        System.out.println("Find series with a rating from how much? ");
+        var rating = reading.nextDouble();
+        List<Series> seriesFound = repository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName, rating);
+        System.out.println("Series in which the actor " + actorName + " worked: ");
+        seriesFound.forEach(s -> System.out.println(s.getTitle() + " rating: " + s.getRating()));
     }
 }
