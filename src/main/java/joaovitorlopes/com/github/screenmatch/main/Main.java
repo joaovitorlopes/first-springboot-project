@@ -1,12 +1,9 @@
 package joaovitorlopes.com.github.screenmatch.main;
 
-import joaovitorlopes.com.github.screenmatch.model.Episode;
-import joaovitorlopes.com.github.screenmatch.model.Series;
-import joaovitorlopes.com.github.screenmatch.model.SeriesData;
+import joaovitorlopes.com.github.screenmatch.model.*;
 import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
-import joaovitorlopes.com.github.screenmatch.model.SeasonData;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,6 +37,8 @@ public class Main {
                     4 - Search Series by Title
                     5 - Search Series by Actors
                     6 - TOP 5 Series
+                    7 - Search Series by Category
+                    8 - Search Series by Total Seasons
                                 
                     0 - Exit
                     """;
@@ -66,6 +65,12 @@ public class Main {
                     break;
                 case 6:
                     searchTop5Series();
+                    break;
+                case 7:
+                    searchSeriesByCategory();
+                    break;
+                case 8:
+                    searchSeriesByTotalSeasons();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -145,7 +150,7 @@ public class Main {
     private void searchSeriesByActor() {
         System.out.println("Enter the actor's name:");
         var actorName = reading.nextLine();
-        System.out.println("Find series with a rating from how much? ");
+        System.out.println("Enter a minimum rating to search series: ");
         var rating = reading.nextDouble();
         List<Series> seriesFound = repository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName, rating);
         System.out.println("Series in which the actor " + actorName + " worked: ");
@@ -155,5 +160,24 @@ public class Main {
     private void searchTop5Series() {
         List<Series> topSeries = repository.findTop5ByOrderByRatingDesc();
         topSeries.forEach(s -> System.out.println(s.getTitle() + " rating: " + s.getRating()));
+    }
+
+    private void searchSeriesByCategory() {
+        System.out.println("Enter a category/genre to search for series: ");
+        var genreName = reading.nextLine();
+        Category category = Category.fromPortuguese(genreName) ;
+        List<Series> seriesByCategory = repository.findByGenre(category);
+        System.out.println(genreName + " category/genre series: ");
+        seriesByCategory.forEach(System.out::println);
+    }
+
+    private void searchSeriesByTotalSeasons() {
+        System.out.println("Total seasons: ");
+        var seasons = reading.nextInt();
+        System.out.println("Enter a minimum rating to search series: ");
+        var rating = reading.nextDouble();
+        List<Series> seriesFound = repository.findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(seasons, rating);
+        System.out.println("Series with " + seasons + " seasons and " + rating + " rating: ");
+        seriesFound.forEach(s -> System.out.println(s.getTitle() + ", Total seasons: " + s.getTotalSeasons() + ", Rating: " + s.getRating()));
     }
 }
