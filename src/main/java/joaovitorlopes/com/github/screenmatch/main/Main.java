@@ -7,7 +7,6 @@ import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
 import joaovitorlopes.com.github.screenmatch.service.ConsumeAPI;
 import joaovitorlopes.com.github.screenmatch.service.DataConversion;
 import joaovitorlopes.com.github.screenmatch.model.SeasonData;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,6 +39,7 @@ public class Main {
                     3 - List Searched Series
                     4 - Search Series by Title
                     5 - Search Series by Actors
+                    6 - TOP 5 Series
                                 
                     0 - Exit
                     """;
@@ -63,6 +63,9 @@ public class Main {
                     break;
                 case 5:
                     searchSeriesByActor();
+                    break;
+                case 6:
+                    searchTop5Series();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -147,5 +150,10 @@ public class Main {
         List<Series> seriesFound = repository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName, rating);
         System.out.println("Series in which the actor " + actorName + " worked: ");
         seriesFound.forEach(s -> System.out.println(s.getTitle() + " rating: " + s.getRating()));
+    }
+
+    private void searchTop5Series() {
+        List<Series> topSeries = repository.findTop5ByOrderByRatingDesc();
+        topSeries.forEach(s -> System.out.println(s.getTitle() + " rating: " + s.getRating()));
     }
 }
