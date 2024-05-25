@@ -4,6 +4,7 @@ import joaovitorlopes.com.github.screenmatch.dto.SeriesDTO;
 import joaovitorlopes.com.github.screenmatch.service.SeriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +30,10 @@ public class SeriesController {
     @GetMapping("/lancamentos")
     public List<SeriesDTO> getReleases() {
         return service.getReleases();
+    }
+
+    @GetMapping("/{id}")
+    public SeriesDTO getById(@PathVariable Long id) {
+        return service.getById(id);
     }
 }
