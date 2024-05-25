@@ -2,6 +2,7 @@ package joaovitorlopes.com.github.screenmatch.service;
 
 import joaovitorlopes.com.github.screenmatch.dto.EpisodeDTO;
 import joaovitorlopes.com.github.screenmatch.dto.SeriesDTO;
+import joaovitorlopes.com.github.screenmatch.model.Category;
 import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,10 @@ public class SeriesService {
                 .stream()
                 .map(e -> new EpisodeDTO(e.getSeason(), e.getEpisodeNumber(), e.getTitle()))
                 .collect(Collectors.toList());
+    }
+
+    public List<SeriesDTO> getSeriesByGenre(String categoryName) {
+        Category category = Category.fromPortuguese(categoryName);
+        return convertData(repository.findByGenre(category));
     }
 }
