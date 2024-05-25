@@ -16,7 +16,6 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
     List<Series> findTop5ByOrderByRatingDesc();
     List<Series> findByGenre(Category category);
     List<Series> findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(Integer totalSeasons, Double rating);
-    List<Series> findTop5ByOrderByEpisodesReleasedDateDesc();
 
     // Using JPQL
     @Query("SELECT s FROM Series s WHERE s.totalSeasons <= :totalSeasons AND s.rating >= :rating")
@@ -27,4 +26,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
     List<Episode> top5EpisodesBySeries(Series series);
     @Query("SELECT e FROM Series s JOIN s.episodes e WHERE s = :series AND YEAR(e.releasedDate) >= :releasedYear")
     List<Episode> findEpisodesBySeriesAndYear(Series series, int releasedYear);
+    @Query("SELECT s FROM Series s JOIN s.episodes e GROUP BY s ORDER BY MAX(e.releasedDate) DESC LIMIT 5")
+    List<Series> findEpisodesByRecentlyReleasedDate();
+
 }
