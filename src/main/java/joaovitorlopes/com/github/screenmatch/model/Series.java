@@ -1,8 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
-import joaovitorlopes.com.github.screenmatch.service.SearchChatGPT;
 
 import java.util.ArrayList;
 import java.util.List;

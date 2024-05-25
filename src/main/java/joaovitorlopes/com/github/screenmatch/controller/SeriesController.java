@@ -1,7 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.controller;
 
 import joaovitorlopes.com.github.screenmatch.dto.SeriesDTO;
-import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
