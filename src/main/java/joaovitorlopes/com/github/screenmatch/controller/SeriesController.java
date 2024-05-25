@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.controller;
 
+import joaovitorlopes.com.github.screenmatch.dto.EpisodeDTO;
 import joaovitorlopes.com.github.screenmatch.dto.SeriesDTO;
 import joaovitorlopes.com.github.screenmatch.service.SeriesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,10 @@ public class SeriesController {
     @GetMapping("/{id}")
     public SeriesDTO getById(@PathVariable Long id) {
         return service.getById(id);
+    }
+
+    @GetMapping("/{id}/temporadas/todas")
+    public List<EpisodeDTO> getAllSeasons(@PathVariable Long id) {
+        return service.getAllSeasons(id);
     }
 }

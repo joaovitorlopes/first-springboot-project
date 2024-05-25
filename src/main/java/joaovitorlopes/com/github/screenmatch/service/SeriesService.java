@@ -1,5 +1,6 @@
 package joaovitorlopes.com.github.screenmatch.service;
 
+import joaovitorlopes.com.github.screenmatch.dto.EpisodeDTO;
 import joaovitorlopes.com.github.screenmatch.dto.SeriesDTO;
 import joaovitorlopes.com.github.screenmatch.model.Series;
 import joaovitorlopes.com.github.screenmatch.repository.SeriesRepository;
@@ -40,6 +41,18 @@ public class SeriesService {
         if (series.isPresent()) {
             Series s = series.get();
             return new SeriesDTO(s.getId(), s.getTitle(), s.getTotalSeasons(), s.getRating(), s.getGenre(), s.getActors(), s.getPlot(), s.getPoster());
+        }
+        return null;
+    }
+
+    public List<EpisodeDTO> getAllSeasons(Long id) {
+        Optional<Series> series = repository.findById(id);
+
+        if (series.isPresent()) {
+            Series s = series.get();
+            return s.getEpisodes().stream()
+                    .map(e -> new EpisodeDTO(e.getSeason(), e.getEpisodeNumber(), e.getTitle()))
+                    .collect(Collectors.toList());
         }
         return null;
     }
